@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.2/js/bootstrap.min.js" 
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+        <title>Filters</title> 
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-6 mx-auto mt-5 text-center">
+                    <h1>Filters</h1>
+                    <h2>Select image</h2>
+                    <form method="post" enctype="multipart/form-data">
+                        {{ upload_form.hidden_tag() }}
+
+                        {% for error in upload_form.photo.error %} 
+                            <span style="color:red;">{{ error }}</span>
+                        {% endfor %}
+
+                        <input type=checkbox name=filters value='Box Filter'> Box Filter <br/>
+                        <input type=checkbox name=filters value='Bilateral Filter'>Bilateral Filter<br/>
+                        <input type=checkbox name=filters value='Median Blur Filter'> Median Blur Filter <br/>
+                        <input type=checkbox name=filters value='Laplacian Derivatives'>Laplacian Derivatives<br/>
+
+                        <div class="row justify-content-center">
+                            <div class="col-auto">
+                                {{ upload_form.photo(class="form-control") }}
+                            </div>
+                            <div class="col-auto">
+                                {{ filtering_form.submit(class="btn btn-succes") }}
+                            </div>
+                        </div>
+                    </form>
+                    {% if filtering_file_url %}
+                        <div class="mt-5">
+                            <img src="{{ filtering_file_url }}" style = "width: 600px;">
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+        </div>
+    </body>
+</html>
