@@ -36,16 +36,19 @@ class FilteringForm(FlaskForm):
 def get_filtering_file(filename):
     return send_from_directory(app.config['DOWNLOAD_FOLDER'], filename)
 
+@app.route('/uploads/<filename>')
+def get_upload_file(filename):
+    return send_from_directory(app.config['UPLOADED_PHOTOS_DEST'], filename)
+
 def filtering(checkbox, filename):
         PATH = os.path.join(UPLOADED_PHOTOS_DEST, filename)
-        match checkbox:
-            case 'Box Filter':
+        if checkbox == 'Box Filter':
                 filtering = Filters.box_filter(PATH)
-            case 'Bilateral Filter':
+        elif checkbox == 'Bilateral Filter':
                 filtering = Filters.bilateral_filter(PATH)
-            case 'Median Blur Filter':
+        elif checkbox == 'Median Blur Filter':
                 filtering = Filters.median_blur_filter(PATH)
-            case 'Laplacian Derivatives':
+        else: #checkbox == 'Laplacian Derivatives':
                 filtering = Filters.laplacian(PATH)
         
         cv2.imwrite(os.path.join(DOWNLOAD_FOLDER, filename), filtering)
@@ -59,11 +62,15 @@ def upload_img():
         filename = photos.save(upload_form.photo.data)
         filtering(request.form.get('filters'), filename)
         filtering_file_url = url_for('get_filtering_file', filename=filename)
+        upload_file_url = url_for('get_upload_file', filename=filename)
     else:
         filtering_file_url = None
+        upload_file_url = None
     return render_template('index.html', upload_form = upload_form, 
                                         filtering_form = filtering_form,
-                                        filtering_file_url = filtering_file_url)
+                                        filtering_file_url = filtering_file_url,
+                                        upload_file_url = upload_file_url
+                                        )
 
 
 if __name__ == '__main__':
